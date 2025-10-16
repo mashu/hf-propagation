@@ -772,7 +772,7 @@ class HFIndicator extends PanelMenu.Button {
         }
         
         if (this._data.a !== null) {
-            this._aItem.label.set_text(`A-Index: ${this._data.a}`);
+            this._aItem.label.set_text(`🧲 A-Index: ${this._data.a}`);
         }
     }
     
