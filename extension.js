@@ -68,6 +68,8 @@ class HFIndicator extends PanelMenu.Button {
     _init() {
         super._init(0.0, 'HF Propagation', false);
         
+        console.log('[HF Propagation] HFIndicator _init() started');
+        
         // Initialize data storage
         this._data = {
             sfi: null,
@@ -283,7 +285,7 @@ class HFIndicator extends PanelMenu.Button {
         
         // A-index
         this._aItem = new PopupMenu.PopupMenuItem('', { reactive: false });
-        this._aItem.label.set_text('A-Index: --');
+        this._aItem.label.set_text('🧲 A-Index: --');
         this.menu.addMenuItem(this._aItem);
         
         // Sunspots
@@ -400,20 +402,27 @@ class HFIndicator extends PanelMenu.Button {
             // SFI ranges from ~60 to 300
             const normalized = Math.min(1.0, Math.max(0, (this._data.sfi - 60) / 240));
             
-            // Gradient based on value
-            let color;
+            // Gradient based on value - convert hex to RGB
+            let r, g, b;
+            let colorHex;
             if (this._data.sfi < 80) {
-                color = Clutter.Color.from_string(COLORS.poor)[1];
+                colorHex = COLORS.poor;
             } else if (this._data.sfi < 120) {
-                color = Clutter.Color.from_string(COLORS.fair)[1];
+                colorHex = COLORS.fair;
             } else if (this._data.sfi < 160) {
-                color = Clutter.Color.from_string(COLORS.good)[1];
+                colorHex = COLORS.good;
             } else {
-                color = Clutter.Color.from_string(COLORS.excellent)[1];
+                colorHex = COLORS.excellent;
             }
             
+            // Convert hex to RGB
+            const hex = colorHex.replace('#', '');
+            r = parseInt(hex.substring(0, 2), 16) / 255;
+            g = parseInt(hex.substring(2, 4), 16) / 255;
+            b = parseInt(hex.substring(4, 6), 16) / 255;
+            
             // Draw filled portion
-            cr.setSourceRGBA(color.red/255, color.green/255, color.blue/255, 0.8);
+            cr.setSourceRGBA(r, g, b, 0.8);
             cr.rectangle(0, 0, width * normalized, height);
             cr.fill();
         }
@@ -442,6 +451,7 @@ class HFIndicator extends PanelMenu.Button {
     }
     
     _fetchAllData() {
+        console.log('[HF Propagation] _fetchAllData() called');
         // Fetch from NOAA
         this._fetchNOAAData();
         // Fetch from HamQSL for band conditions
@@ -450,6 +460,7 @@ class HFIndicator extends PanelMenu.Button {
     
     _fetchNOAAData() {
         // Fetch latest solar indices
+        console.log('[HF Propagation] Fetching NOAA solar data from:', DATA_SOURCES.noaa_solar);
         const message = Soup.Message.new('GET', DATA_SOURCES.noaa_solar);
         
         this._httpSession.send_and_read_async(
@@ -457,6 +468,7 @@ class HFIndicator extends PanelMenu.Button {
             GLib.PRIORITY_DEFAULT,
             null,
             (session, result) => {
+                console.log('[HF Propagation] NOAA solar data callback triggered');
                 try {
                     const bytes = session.send_and_read_finish(result);
                     const decoder = new TextDecoder('utf-8');
@@ -471,13 +483,16 @@ class HFIndicator extends PanelMenu.Button {
                         this._data.sfi = latest.f10_7 || latest.solar_flux || null;
                         this._data.sunspots = latest.sunspot_number || null;
                         
+                        console.log(`[HF Propagation] NOAA Solar data: SFI=${this._data.sfi}, Sunspots=${this._data.sunspots}`);
+                        
                         // Calculate trend
                         if (previous && previous.f10_7) {
                             const diff = this._data.sfi - previous.f10_7;
                             this._data.trend = diff > 2 ? 'up' : diff < -2 ? 'down' : 'stable';
                         }
                         
-                        this._updateSolarDisplay();
+                        this._calculateBandConditions();
+                        this._updateAllDisplays();
                     }
                 } catch (e) {
                     console.error('[HF Propagation] Error parsing NOAA solar data:', e);
@@ -486,6 +501,7 @@ class HFIndicator extends PanelMenu.Button {
         );
         
         // Fetch K-index
+        console.log('[HF Propagation] Fetching NOAA K-index data from:', DATA_SOURCES.noaa_planetary_k);
         const kMessage = Soup.Message.new('GET', DATA_SOURCES.noaa_planetary_k);
         
         this._httpSession.send_and_read_async(
@@ -493,6 +509,7 @@ class HFIndicator extends PanelMenu.Button {
             GLib.PRIORITY_DEFAULT,
             null,
             (session, result) => {
+                console.log('[HF Propagation] NOAA K-index callback triggered');
                 try {
                     const bytes = session.send_and_read_finish(result);
                     const decoder = new TextDecoder('utf-8');
@@ -505,7 +522,10 @@ class HFIndicator extends PanelMenu.Button {
                         this._data.k = parseInt(latest[1]) || 0;
                         this._data.a = latest[2] || null;
                         
-                        this._updateMagneticDisplay();
+                        console.log(`[HF Propagation] NOAA K-index data: K=${this._data.k}, A=${this._data.a}`);
+                        
+                        this._calculateBandConditions();
+                        this._updateAllDisplays();
                     }
                 } catch (e) {
                     console.error('[HF Propagation] Error parsing NOAA K-index:', e);
@@ -515,6 +535,7 @@ class HFIndicator extends PanelMenu.Button {
     }
     
     _fetchHamQSLData() {
+        console.log('[HF Propagation] Fetching HamQSL data from:', DATA_SOURCES.hamqsl);
         const message = Soup.Message.new('GET', DATA_SOURCES.hamqsl);
         
         this._httpSession.send_and_read_async(
@@ -522,6 +543,7 @@ class HFIndicator extends PanelMenu.Button {
             GLib.PRIORITY_DEFAULT,
             null,
             (session, result) => {
+                console.log('[HF Propagation] HamQSL callback triggered');
                 try {
                     const bytes = session.send_and_read_finish(result);
                     const decoder = new TextDecoder('utf-8');
@@ -585,6 +607,8 @@ class HFIndicator extends PanelMenu.Button {
         if (protonflux) {
             this._data.protonFlux = protonflux;
         }
+        
+        console.log(`[HF Propagation] HamQSL data: SFI=${this._data.sfi}, K=${this._data.k}, A=${this._data.a}, Sunspots=${this._data.sunspots}, X-ray=${this._data.xray}`);
         
         // Extract band conditions
         const bandConditions = extract('calculatedconditions');
@@ -780,9 +804,15 @@ export default class HFPropagationExtension {
     }
     
     enable() {
-        this._indicator = new HFIndicator();
-        Main.panel.addToStatusArea('hf-propagation-indicator', this._indicator);
-        console.log('[HF Propagation] Extension enabled - fetching real data from NOAA & HamQSL');
+        try {
+            console.log('[HF Propagation] Extension enable() starting...');
+            this._indicator = new HFIndicator();
+            console.log('[HF Propagation] HFIndicator created');
+            Main.panel.addToStatusArea('hf-propagation-indicator', this._indicator);
+            console.log('[HF Propagation] Extension enabled - fetching real data from NOAA & HamQSL');
+        } catch (e) {
+            console.error('[HF Propagation] Error in enable():', e, e.stack);
+        }
     }
     
     disable() {
