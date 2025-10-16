@@ -1,0 +1,250 @@
+/* HF Propagation Monitor - Modern Stylesheet */
+
+/* Panel styles */
+.hf-panel-box {
+    spacing: 6px;
+    padding: 0 8px;
+}
+
+.hf-panel-label {
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Animated gradient backgrounds */
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hf-gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 15s ease infinite;
+}
+
+/* Solar condition colors with glow effects */
+.solar-excellent {
+    color: #10b981;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.solar-good {
+    color: #84cc16;
+    text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
+}
+
+.solar-fair {
+    color: #eab308;
+    text-shadow: 0 0 6px rgba(234, 179, 8, 0.4);
+}
+
+.solar-poor {
+    color: #ef4444;
+    text-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+}
+
+/* K-index indicators with pulse animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.k-quiet {
+    background: linear-gradient(135deg, #22c55e, #10b981);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+    animation: pulse 3s infinite;
+}
+
+.k-unsettled {
+    background: linear-gradient(135deg, #facc15, #f59e0b);
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.6);
+    animation: pulse 2.5s infinite;
+}
+
+.k-active {
+    background: linear-gradient(135deg, #fb923c, #f97316);
+    box-shadow: 0 0 12px rgba(251, 146, 60, 0.6);
+    animation: pulse 2s infinite;
+}
+
+.k-storm {
+    background: linear-gradient(135deg, #f87171, #dc2626);
+    box-shadow: 0 0 15px rgba(248, 113, 113, 0.8);
+    animation: pulse 1.5s infinite;
+}
+
+/* Band condition bars with modern glass effect */
+.band-bar {
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.band-bar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.band-excellent {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.band-good {
+    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+    box-shadow: 0 0 15px rgba(132, 204, 22, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.band-fair {
+    background: linear-gradient(135deg, #facc15 0%, #ca8a04 100%);
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.band-poor {
+    background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Menu container with glass morphism */
+.hf-menu-container {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Data cards with neumorphism */
+.hf-data-card {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+    border-radius: 8px;
+    padding: 12px;
+    margin: 4px;
+    box-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 0.3),
+        -5px -5px 10px rgba(255, 255, 255, 0.05),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Progress bars with animated fill */
+@keyframes progress-fill {
+    from {
+        width: 0;
+    }
+    to {
+        width: var(--progress-width);
+    }
+}
+
+.hf-progress {
+    position: relative;
+    height: 8px;
+    background: rgba(100, 116, 139, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.hf-progress-fill {
+    position: absolute;
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 4px;
+    animation: progress-fill 1s ease-out forwards;
+}
+
+/* Hover effects for interactive elements */
+.hf-interactive:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+/* Tooltip styles */
+.hf-tooltip {
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.hf-loading {
+    animation: spin 1s linear infinite;
+}
+
+/* Modern scrollbar for menu */
+.hf-menu-scrollbar {
+    width: 4px;
+}
+
+.hf-menu-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.hf-menu-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Text effects */
+.hf-title {
+    font-size: 16px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Icon animations */
+@keyframes icon-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+.hf-icon-animated {
+    animation: icon-bounce 2s ease-in-out infinite;
+}
+
+/* Glow effect for important values */
+.hf-value-glow {
+    font-weight: bold;
+    text-shadow: 
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor;
+}
+
+/* Card hover lift effect */
+.hf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        0 6px 6px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Smooth transitions */
+.hf-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
