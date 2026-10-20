@@ -1,14 +1,17 @@
 {
-  "name": "HF Propagation Monitor",
-  "description": "Real-time HF radio propagation conditions with modern graphics. Shows solar flux, K-index, and band conditions from NOAA SWPC and HamQSL data.",
+  "name": "HF Propagation",
+  "description": "Live HF radio propagation dashboard for radio amateurs: band conditions with a 24-hour outlook and best operating windows, local MUF (ionosonde calibrated), absorption, noise floor, sun and grey line, SFI, SSN, Kp, A, X-ray, solar wind and NOAA space weather scales. Data from N0NBH/HamQSL, NOAA SWPC and KC2G.",
   "uuid": "hf-propagation@mashu.github.io",
   "shell-version": [
-    "45",
-    "46", 
+    "46",
     "47",
-    "48"
+    "48",
+    "49",
+    "50",
+    "51"
   ],
-  "version": 1,
+  "version": 2,
+  "version-name": "2.0",
   "url": "https://github.com/mashu/hf-propagation",
   "settings-schema": "org.gnome.shell.extensions.hf-propagation"
 }
