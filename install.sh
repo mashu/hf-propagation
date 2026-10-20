@@ -1,114 +1,108 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# HF Propagation – GNOME Shell extension installer
+#
+#   ./install.sh              install or update for the current user
+#   ./install.sh --pack       build hf-propagation@mashu.github.io.shell-extension.zip
+#   ./install.sh --uninstall  remove the extension
+#
+set -euo pipefail
 
-# HF Propagation GNOME Extension Installer
-# Run this script in the directory containing the extension files
+UUID="hf-propagation@mashu.github.io"
+SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+EXT_ROOT="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions"
+DEST="$EXT_ROOT/$UUID"
 
-EXTENSION_UUID="hf-propagation@mashu.github.io"
-EXTENSIONS_DIR="$HOME/.local/share/gnome-shell/extensions"
-EXTENSION_DIR="$EXTENSIONS_DIR/$EXTENSION_UUID"
+FILES=(extension.js prefs.js metadata.json stylesheet.css stylesheet-light.css)
+DIRS=(lib icons schemas)
 
-echo "HF Propagation Extension Installer"
-echo "=================================="
-echo ""
+bold() { printf '\033[1m%s\033[0m\n' "$*"; }
+info() { printf '  \033[36m•\033[0m %s\n' "$*"; }
+ok()   { printf '  \033[32m✓\033[0m %s\n' "$*"; }
+warn() { printf '  \033[33m!\033[0m %s\n' "$*"; }
+die()  { printf '  \033[31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 
-# Check GNOME Shell version
-echo "Checking GNOME Shell version..."
-GNOME_VERSION=$(gnome-shell --version 2>/dev/null)
-if [ $? -eq 0 ]; then
-    echo "Found: $GNOME_VERSION"
-else
-    echo "WARNING: Could not determine GNOME Shell version"
-fi
-echo ""
+shell_major() {
+    gnome-shell --version 2>/dev/null | sed -n 's/^GNOME Shell \([0-9]*\).*/\1/p'
+}
 
-# Check if extension directory exists
-if [ -d "$EXTENSION_DIR" ]; then
-    echo "Extension directory already exists."
-    read -p "Do you want to remove it and reinstall? (y/n): " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        rm -rf "$EXTENSION_DIR"
-        echo "Removed existing extension directory."
-    else
-        echo "Aborting installation."
-        exit 1
+check_version() {
+    local major
+    major="$(shell_major)"
+    if [[ -z "$major" ]]; then
+        warn "Could not determine the GNOME Shell version"
+        return
     fi
-fi
+    info "GNOME Shell $major detected"
+    if ! grep -q "\"$major\"" "$SRC_DIR/metadata.json"; then
+        warn "GNOME Shell $major is not listed in metadata.json; the extension may be marked as out of date"
+    fi
+}
 
-# Create extension directory
-echo "Creating extension directory..."
-mkdir -p "$EXTENSION_DIR"
+pack() {
+    bold "Packing $UUID"
+    command -v gnome-extensions >/dev/null || die "gnome-extensions tool not found"
+    gnome-extensions pack "$SRC_DIR" --force --out-dir="$SRC_DIR" \
+        --extra-source=lib --extra-source=icons
+    ok "Created $SRC_DIR/$UUID.shell-extension.zip"
+    info "Install it with: gnome-extensions install --force $UUID.shell-extension.zip"
+}
 
-# Copy files
-echo "Installing extension files..."
-cp extension.js "$EXTENSION_DIR/" 2>/dev/null || echo "WARNING: extension.js not found"
-cp metadata.json "$EXTENSION_DIR/" 2>/dev/null || echo "WARNING: metadata.json not found"
-cp stylesheet.css "$EXTENSION_DIR/" 2>/dev/null || echo "WARNING: stylesheet.css not found"
+uninstall() {
+    bold "Removing $UUID"
+    gnome-extensions disable "$UUID" 2>/dev/null || true
+    rm -rf "$DEST"
+    ok "Removed $DEST"
+}
 
-# Check if files were copied
-if [ ! -f "$EXTENSION_DIR/extension.js" ] || [ ! -f "$EXTENSION_DIR/metadata.json" ]; then
-    echo "ERROR: Required files not found in current directory!"
-    echo "Make sure extension.js and metadata.json are in the current directory."
-    exit 1
-fi
+install() {
+    bold "Installing HF Propagation"
+    check_version
 
-echo "Files installed successfully."
-echo ""
+    for f in "${FILES[@]}"; do
+        [[ -f "$SRC_DIR/$f" ]] || die "Missing $f – run this script from the repository"
+    done
+    for d in "${DIRS[@]}"; do
+        [[ -d "$SRC_DIR/$d" ]] || die "Missing $d/ – run this script from the repository"
+    done
+    command -v glib-compile-schemas >/dev/null || die "glib-compile-schemas not found (install glib2 / libglib2.0-bin)"
 
-# Disable extension first (if enabled)
-echo "Disabling extension (if currently enabled)..."
-gnome-extensions disable "$EXTENSION_UUID" 2>/dev/null
+    rm -rf "$DEST"
+    mkdir -p "$DEST"
+    for f in "${FILES[@]}"; do
+        cp "$SRC_DIR/$f" "$DEST/"
+    done
+    for d in "${DIRS[@]}"; do
+        cp -r "$SRC_DIR/$d" "$DEST/"
+    done
+    rm -f "$DEST/schemas/gschemas.compiled"
+    glib-compile-schemas "$DEST/schemas"
+    ok "Files installed to $DEST"
 
-# Check for Wayland vs X11
-SESSION_TYPE=$(echo $XDG_SESSION_TYPE)
-echo "Session type: $SESSION_TYPE"
+    if gnome-extensions enable "$UUID" 2>/dev/null; then
+        ok "Extension enabled"
+    else
+        warn "GNOME Shell has not seen the extension yet"
+    fi
 
-if [ "$SESSION_TYPE" = "x11" ]; then
-    echo ""
-    echo "Restarting GNOME Shell..."
-    # Send Alt+F2, r, Return
-    busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'Meta.restart("Restarting...")' 2>/dev/null || {
-        echo "Could not restart GNOME Shell automatically."
-        echo "Please press Alt+F2, type 'r', and press Enter."
-        read -p "Press Enter after restarting GNOME Shell..."
-    }
-else
-    echo ""
-    echo "Running on Wayland - GNOME Shell restart not available."
-    echo "The extension will be loaded without restart."
-fi
+    echo
+    if gnome-extensions info "$UUID" 2>/dev/null | grep -qE 'State: (ACTIVE|ENABLED)'; then
+        ok "HF Propagation is running – look for the antenna icon in the top bar"
+    else
+        bold "Almost done"
+        info "GNOME Shell on Wayland only discovers new extensions at login."
+        info "Log out and back in, then run:  gnome-extensions enable $UUID"
+        info "(or use the Extensions app). Updating an already loaded extension also needs a re-login."
+    fi
+    echo
+    info "Settings: gnome-extensions prefs $UUID"
+    info "Logs:     journalctl -f -o cat /usr/bin/gnome-shell | grep 'HF Propagation'"
+}
 
-echo ""
-echo "Enabling extension..."
-gnome-extensions enable "$EXTENSION_UUID"
-
-# Check if extension is enabled
-sleep 1
-if gnome-extensions info "$EXTENSION_UUID" 2>/dev/null | grep -q "State: ENABLED"; then
-    echo "✓ Extension is ENABLED"
-else
-    echo "✗ Extension is NOT enabled"
-    echo ""
-    echo "Troubleshooting:"
-    echo "1. Check for errors:"
-    echo "   journalctl -f -o cat /usr/bin/gnome-shell"
-    echo ""
-    echo "2. Try enabling manually:"
-    echo "   gnome-extensions enable $EXTENSION_UUID"
-    echo ""
-    echo "3. Or use GNOME Extensions app"
-    echo ""
-    echo "4. On Wayland, you may need to log out and log back in"
-fi
-
-echo ""
-echo "Installation complete!"
-echo ""
-echo "Quick Commands:"
-echo "  View logs:     journalctl -f -o cat /usr/bin/gnome-shell"
-echo "  Enable:        gnome-extensions enable $EXTENSION_UUID"
-echo "  Disable:       gnome-extensions disable $EXTENSION_UUID"
-echo "  Reset:         gnome-extensions reset $EXTENSION_UUID"
-echo "  Info:          gnome-extensions info $EXTENSION_UUID"
-echo ""
-echo "The extension should appear in your top panel showing HF propagation data."
+case "${1:-}" in
+    --pack) pack ;;
+    --uninstall) uninstall ;;
+    ""|--install) install ;;
+    -h|--help) sed -n '3,8p' "$0" | sed 's/^# \{0,1\}//' ;;
+    *) die "Unknown option: $1 (try --help)" ;;
+esac

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.hf-propagation" path="/org/gnome/shell/extensions/hf-propagation/">
+
+    <key name="location-source" type="s">
+      <choices>
+        <choice value="auto"/>
+        <choice value="locator"/>
+        <choice value="coordinates"/>
+      </choices>
+      <default>'auto'</default>
+      <summary>How the station location is determined</summary>
+      <description>"auto" guesses from the system time zone, "locator" uses the Maidenhead locator, "coordinates" uses latitude/longitude.</description>
+    </key>
+
+    <key name="locator" type="s">
+      <default>''</default>
+      <summary>Maidenhead grid locator of the station</summary>
+    </key>
+
+    <key name="latitude" type="d">
+      <range min="-90" max="90"/>
+      <default>0.0</default>
+      <summary>Station latitude in degrees (north positive)</summary>
+    </key>
+
+    <key name="longitude" type="d">
+      <range min="-180" max="180"/>
+      <default>0.0</default>
+      <summary>Station longitude in degrees (east positive)</summary>
+    </key>
+
+    <key name="noise-environment" type="s">
+      <choices>
+        <choice value="quiet"/>
+        <choice value="rural"/>
+        <choice value="residential"/>
+        <choice value="city"/>
+      </choices>
+      <default>'residential'</default>
+      <summary>Man-made noise environment (ITU-R P.372)</summary>
+    </key>
+
+    <key name="refresh-interval" type="i">
+      <range min="5" max="180"/>
+      <default>15</default>
+      <summary>Data refresh interval in minutes</summary>
+    </key>
+
+    <key name="use-ionosondes" type="b">
+      <default>true</default>
+      <summary>Calibrate the MUF with nearby ionosondes (KC2G)</summary>
+    </key>
+
+    <key name="use-utc" type="b">
+      <default>false</default>
+      <summary>Show times in UTC instead of local time</summary>
+    </key>
+
+    <key name="panel-position" type="s">
+      <choices>
+        <choice value="left"/>
+        <choice value="center"/>
+        <choice value="right"/>
+      </choices>
+      <default>'right'</default>
+      <summary>Position of the indicator in the top bar</summary>
+    </key>
+
+    <key name="panel-show-status-dot" type="b">
+      <default>true</default>
+      <summary>Show the overall condition dot in the top bar</summary>
+    </key>
+
+    <key name="panel-show-sfi" type="b">
+      <default>true</default>
+      <summary>Show the solar flux in the top bar</summary>
+    </key>
+
+    <key name="panel-show-kp" type="b">
+      <default>true</default>
+      <summary>Show the Kp index in the top bar</summary>
+    </key>
+
+    <key name="panel-show-muf" type="b">
+      <default>false</default>
+      <summary>Show the local MUF in the top bar</summary>
+    </key>
+
+    <key name="panel-show-best-band" type="b">
+      <default>false</default>
+      <summary>Show the best band right now in the top bar</summary>
+    </key>
+
+  </schema>
+</schemalist>

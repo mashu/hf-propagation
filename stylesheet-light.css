@@ -1,0 +1,673 @@
+/* HF Propagation – light style (loaded when GNOME Shell uses its light variant).
+ * Only properties supported by GNOME Shell's St toolkit are used.
+ * Custom "-hfp-*" colours are read by the Cairo-drawn widgets. */
+
+/* ── Top bar ─────────────────────────────────────────────────────────── */
+
+.hfp-panel-box {
+    spacing: 6px;
+}
+
+.hfp-panel-icon {
+    icon-size: 16px;
+}
+
+.hfp-panel-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.315);
+}
+
+.hfp-panel-item {
+    spacing: 3px;
+}
+
+.hfp-panel-key {
+    font-size: 0.82em;
+    font-weight: 600;
+}
+
+.hfp-panel-value {
+    font-weight: bold;
+    font-feature-settings: "tnum";
+}
+
+.hfp-dot-excellent { background-color: #059669; }
+.hfp-dot-good { background-color: #4d7c0f; }
+.hfp-dot-fair { background-color: #b45309; }
+.hfp-dot-poor { background-color: #c2410c; }
+.hfp-dot-closed { background-color: #dc2626; }
+
+/* ── Menu & dashboard ────────────────────────────────────────────────── */
+
+.popup-menu-content.hfp-menu-box {
+    padding: 10px;
+}
+
+.hfp-dashboard {
+    spacing: 12px;
+    color: #1f1f23;
+
+    -hfp-fg: #1f2937;
+    -hfp-track: rgba(0, 0, 0, 0.08);
+    -hfp-accent: #2563eb;
+    -hfp-excellent: #10b981;
+    -hfp-good: #84cc16;
+    -hfp-fair: #f59e0b;
+    -hfp-poor: #f97316;
+    -hfp-closed: #ef4444;
+
+    -hfp-day: rgba(245, 158, 11, 0.7);
+    -hfp-twilight: #f0643a;
+    -hfp-night: rgba(79, 70, 229, 0.42);
+
+    -hfp-map-bg: rgba(15, 23, 42, 0.03);
+    -hfp-night-shade: rgba(30, 41, 59, 0.2);
+    -hfp-land-day: #e9a23b;
+    -hfp-land-twilight: #f0643a;
+    -hfp-land-night: rgba(71, 85, 105, 0.42);
+    -hfp-terminator: #f0643a;
+    -hfp-sun: #f59e0b;
+    -hfp-qth: #0284c7;
+    -hfp-station: rgba(30, 41, 59, 0.8);
+}
+
+/* Header */
+
+.hfp-header {
+    spacing: 12px;
+    padding: 2px 2px 0 2px;
+}
+
+.hfp-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background-gradient-direction: vertical;
+    background-gradient-start: #4f8cff;
+    background-gradient-end: #7c4dff;
+    box-shadow: 0 2px 8px rgba(79, 140, 255, 0.35);
+}
+
+.hfp-logo-icon {
+    icon-size: 22px;
+    color: #ffffff;
+}
+
+.hfp-titles {
+    spacing: 1px;
+}
+
+.hfp-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #16161a;
+}
+
+.hfp-subtitle {
+    font-size: 11.5px;
+    color: rgba(0, 0, 0, 0.522);
+    font-feature-settings: "tnum";
+}
+
+.hfp-badges {
+    spacing: 5px;
+    margin-right: 4px;
+}
+
+.hfp-badge {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 9px;
+    border-radius: 99px;
+    color: rgba(0, 0, 0, 0.495);
+    background-color: rgba(0, 0, 0, 0.063);
+}
+
+.hfp-badge-0 { color: #059669; background-color: rgba(5, 150, 105, 0.14); }
+.hfp-badge-1 { color: #b45309; background-color: rgba(217, 119, 6, 0.16); }
+.hfp-badge-2 { color: #c2410c; background-color: rgba(234, 88, 12, 0.18); }
+.hfp-badge-3,
+.hfp-badge-4,
+.hfp-badge-5 { color: #ffffff; background-color: rgba(220, 38, 38, 0.75); }
+
+.hfp-icon-button {
+    padding: 9px;
+    border-radius: 99px;
+    color: rgba(0, 0, 0, 0.765);
+}
+
+.hfp-icon-button:hover {
+    background-color: rgba(0, 0, 0, 0.081);
+    color: #16161a;
+}
+
+.hfp-icon-button:active {
+    background-color: rgba(0, 0, 0, 0.135);
+}
+
+.hfp-icon-button:focus {
+    box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.7);
+}
+
+.hfp-icon-button:busy {
+    color: rgba(0, 0, 0, 0.315);
+}
+
+.hfp-icon-button-icon {
+    icon-size: 16px;
+}
+
+/* Cards */
+
+.hfp-card {
+    padding: 12px 14px;
+    border-radius: 14px;
+    spacing: 8px;
+    background-color: rgba(0, 0, 0, 0.041);
+    border: 1px solid rgba(0, 0, 0, 0.063);
+}
+
+.hfp-card-head {
+    spacing: 8px;
+}
+
+.hfp-card-title {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: rgba(0, 0, 0, 0.495);
+}
+
+.hfp-card-aside {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+/* Hero: summary + tiles */
+
+.hfp-hero {
+    spacing: 12px;
+}
+
+.hfp-summary {
+    width: 330px;
+    spacing: 14px;
+    background-gradient-direction: vertical;
+    background-gradient-start: rgba(37, 99, 235, 0.07);
+    background-gradient-end: rgba(124, 77, 255, 0.04);
+    border: 1px solid rgba(37, 99, 235, 0.16);
+}
+
+.hfp-gauge-box {
+    width: 96px;
+    height: 96px;
+}
+
+.hfp-gauge {
+    width: 96px;
+    height: 96px;
+}
+
+.hfp-gauge-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #16161a;
+    font-feature-settings: "tnum";
+}
+
+.hfp-gauge-caption {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: rgba(0, 0, 0, 0.495);
+}
+
+.hfp-summary-text {
+    spacing: 5px;
+}
+
+.hfp-headline {
+    font-size: 15px;
+    font-weight: 800;
+    color: #16161a;
+}
+
+.hfp-summary-detail {
+    font-size: 11.5px;
+    color: rgba(0, 0, 0, 0.612);
+}
+
+.hfp-best-row {
+    spacing: 8px;
+    margin-top: 3px;
+}
+
+.hfp-best-key {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hfp-chips {
+    spacing: 4px;
+}
+
+.hfp-chip-empty {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hfp-tiles {
+    spacing: 8px;
+}
+
+.hfp-tile-row {
+    spacing: 8px;
+}
+
+.hfp-tile {
+    min-width: 104px;
+    padding: 9px 11px 8px 11px;
+    border-radius: 12px;
+    spacing: 1px;
+    background-color: rgba(0, 0, 0, 0.041);
+    border: 1px solid rgba(0, 0, 0, 0.063);
+}
+
+.hfp-tile-key {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hfp-tile-aside {
+    font-size: 10px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hfp-tile-value-row {
+    spacing: 3px;
+}
+
+.hfp-tile-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #16161a;
+    font-feature-settings: "tnum";
+}
+
+.hfp-tile-unit {
+    font-size: 10.5px;
+    color: rgba(0, 0, 0, 0.45);
+    padding-bottom: 3px;
+}
+
+.hfp-tile-caption {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.hfp-kp-bars {
+    height: 15px;
+    margin-top: 2px;
+}
+
+.hfp-spark {
+    height: 15px;
+    margin-top: 2px;
+}
+
+/* Columns */
+
+.hfp-columns {
+    spacing: 12px;
+}
+
+.hfp-column-left {
+    width: 330px;
+    spacing: 12px;
+}
+
+.hfp-column-right {
+    spacing: 12px;
+}
+
+/* Ionosphere */
+
+.hfp-metric-row {
+    spacing: 8px;
+}
+
+.hfp-metric {
+    padding: 8px 10px;
+    border-radius: 10px;
+    spacing: 1px;
+    background-color: rgba(0, 0, 0, 0.036);
+}
+
+.hfp-metric-key {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hfp-metric-value-row {
+    spacing: 4px;
+}
+
+.hfp-metric-value {
+    font-size: 19px;
+    font-weight: 800;
+    color: #16161a;
+    font-feature-settings: "tnum";
+}
+
+.hfp-metric-unit {
+    font-size: 10.5px;
+    color: rgba(0, 0, 0, 0.45);
+    padding-bottom: 3px;
+}
+
+.hfp-metric-caption {
+    font-size: 10.5px;
+    color: rgba(0, 0, 0, 0.522);
+}
+
+.hfp-spectrum-head {
+    margin-top: 2px;
+}
+
+.hfp-spectrum-caption {
+    font-size: 11px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.72);
+    font-feature-settings: "tnum";
+}
+
+.hfp-spectrum {
+    height: 26px;
+    color: #16161a;
+    font-size: 9px;
+}
+
+/* Sun & grey line */
+
+.hfp-map {
+    height: 118px;
+}
+
+.hfp-kv-grid {
+    spacing: 8px;
+}
+
+.hfp-kv-row {
+    spacing: 8px;
+}
+
+.hfp-kv {
+    spacing: 0;
+}
+
+.hfp-kv-key {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hfp-kv-value {
+    font-size: 15px;
+    font-weight: 800;
+    color: #16161a;
+    font-feature-settings: "tnum";
+}
+
+.hfp-kv-caption {
+    font-size: 10.5px;
+    color: rgba(0, 0, 0, 0.522);
+}
+
+/* Band outlook */
+
+.hfp-band-rows {
+    spacing: 3px;
+}
+
+.hfp-band-row {
+    spacing: 8px;
+    min-height: 22px;
+}
+
+.hfp-band-head {
+    min-height: 14px;
+}
+
+.hfp-daylight-row {
+    min-height: 0;
+    margin-bottom: 2px;
+}
+
+.hfp-col-key {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hfp-col-band { width: 40px; }
+.hfp-col-now { width: 72px; }
+.hfp-col-strip { width: 264px; }
+.hfp-col-best { width: 60px; }
+.hfp-col-noise { width: 44px; }
+
+.hfp-hours {
+    spacing: 0;
+}
+
+.hfp-hour-label {
+    width: 33px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.45);
+    font-feature-settings: "tnum";
+}
+
+.hfp-daylight {
+    width: 264px;
+    height: 5px;
+}
+
+.hfp-strip {
+    width: 264px;
+    height: 19px;
+}
+
+.hfp-band-name {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #16161a;
+    font-feature-settings: "tnum";
+}
+
+.hfp-best {
+    font-size: 12px;
+    font-weight: bold;
+    color: #1d4ed8;
+    font-feature-settings: "tnum";
+}
+
+.hfp-noise {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.63);
+    text-align: right;
+    font-feature-settings: "tnum";
+}
+
+.hfp-legend {
+    spacing: 12px;
+    margin-top: 2px;
+}
+
+.hfp-legend-item {
+    spacing: 5px;
+}
+
+.hfp-legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.hfp-swatch-excellent { background-color: #059669; }
+.hfp-swatch-good { background-color: #4d7c0f; }
+.hfp-swatch-fair { background-color: #b45309; }
+.hfp-swatch-poor { background-color: #c2410c; }
+.hfp-swatch-closed { background-color: rgba(0, 0, 0, 0.09); }
+
+.hfp-legend-best {
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+    background-color: #2563eb;
+}
+
+.hfp-legend-label {
+    font-size: 10.5px;
+    color: rgba(0, 0, 0, 0.495);
+}
+
+/* Condition pills */
+
+.hfp-pill {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 9px;
+    border-radius: 99px;
+    color: rgba(0, 0, 0, 0.45);
+    background-color: rgba(0, 0, 0, 0.054);
+}
+
+.hfp-pill.hfp-excellent { color: #059669; background-color: rgba(5, 150, 105, 0.15); }
+.hfp-pill.hfp-good { color: #4d7c0f; background-color: rgba(101, 163, 13, 0.13); }
+.hfp-pill.hfp-fair { color: #b45309; background-color: rgba(217, 119, 6, 0.14); }
+.hfp-pill.hfp-poor { color: #c2410c; background-color: rgba(234, 88, 12, 0.14); }
+.hfp-pill.hfp-closed { color: rgba(0, 0, 0, 0.378); background-color: rgba(0, 0, 0, 0.045); }
+
+/* Reference (N0NBH) */
+
+.hfp-ref-row {
+    spacing: 8px;
+}
+
+.hfp-ref-key {
+    width: 40px;
+    font-size: 11px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.hfp-ref-col {
+    width: 100px;
+}
+
+.hfp-vhf {
+    spacing: 6px;
+    margin-top: 2px;
+}
+
+.hfp-vhf-chip {
+    spacing: 5px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.045);
+}
+
+.hfp-vhf-name {
+    font-size: 10.5px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.63);
+}
+
+.hfp-vhf-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0.198);
+}
+
+.hfp-vhf-value {
+    font-size: 10.5px;
+    color: rgba(0, 0, 0, 0.36);
+}
+
+.hfp-vhf-open {
+    background-color: rgba(5, 150, 105, 0.15);
+}
+
+.hfp-vhf-open .hfp-vhf-dot {
+    background-color: #059669;
+}
+
+.hfp-vhf-open .hfp-vhf-value {
+    color: #059669;
+    font-weight: bold;
+}
+
+/* Footer */
+
+.hfp-footer {
+    spacing: 14px;
+    padding: 0 4px;
+}
+
+.hfp-source {
+    spacing: 5px;
+}
+
+.hfp-source-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.225);
+}
+
+.hfp-source-ok { background-color: #059669; }
+.hfp-source-partial { background-color: #b45309; }
+.hfp-source-error { background-color: #dc2626; }
+.hfp-source-stale { background-color: #64748b; }
+
+.hfp-source-label,
+.hfp-updated {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.495);
+}
+
+.hfp-link {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 99px;
+    color: #1d4ed8;
+}
+
+.hfp-link:hover {
+    background-color: rgba(37, 99, 235, 0.14);
+}
+
+.hfp-link:focus {
+    box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.7);
+}
+
+/* Status text colours */
+
+.hfp-c-excellent { color: #059669; }
+.hfp-c-good { color: #4d7c0f; }
+.hfp-c-fair { color: #b45309; }
+.hfp-c-poor { color: #c2410c; }
+.hfp-c-closed { color: #dc2626; }
+.hfp-c-greyline { color: #ea580c; }
