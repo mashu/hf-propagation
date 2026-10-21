@@ -68,6 +68,14 @@ or the Extensions app.
 To build a zip for `gnome-extensions install` run `./install.sh --pack`. To
 remove the extension run `./install.sh --uninstall`.
 
+### Publishing on extensions.gnome.org
+
+Upload the zip created by `./install.sh --pack`, never a zip of the
+repository folder. The packed zip contains only the files GNOME Shell loads
+(`extension.js`, `prefs.js`, `metadata.json`, the stylesheets, `lib/`,
+`icons/` and the schema XML), as the review guidelines require. It leaves out
+the install script, README, screenshots and compiled schemas.
+
 ## Settings
 
 Open the settings from the gear button in the dashboard, or with

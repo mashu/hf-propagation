@@ -27,7 +27,7 @@ const PANEL_POSITIONS = [
     ['right', 'Right'],
 ];
 
-function comboRow(settings, key, title, subtitle, choices) {
+function comboRow(settings, handlers, key, title, subtitle, choices) {
     const row = new Adw.ComboRow({
         title,
         subtitle,
@@ -43,7 +43,7 @@ function comboRow(settings, key, title, subtitle, choices) {
         if (value && value !== settings.get_string(key))
             settings.set_string(key, value);
     });
-    settings.connect(`changed::${key}`, sync);
+    handlers.push(settings.connect(`changed::${key}`, sync));
     return row;
 }
 
@@ -76,6 +76,11 @@ function linkRow(title, subtitle, uri) {
 export default class HFPropagationPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
+        const handlers = [];
+        window.connect('close-request', () => {
+            handlers.forEach(id => settings.disconnect(id));
+            handlers.length = 0;
+        });
         window.set_default_size(660, 780);
         window.search_enabled = true;
 
@@ -92,7 +97,7 @@ export default class HFPropagationPreferences extends ExtensionPreferences {
         });
         page.add(location);
 
-        location.add(comboRow(settings, 'location-source', 'Location source', '', LOCATION_SOURCES));
+        location.add(comboRow(settings, handlers, 'location-source', 'Location source', '', LOCATION_SOURCES));
 
         const locatorRow = new Adw.EntryRow({
             title: 'Grid locator',
@@ -153,21 +158,21 @@ export default class HFPropagationPreferences extends ExtensionPreferences {
             }
         };
         for (const key of ['location-source', 'locator', 'latitude', 'longitude'])
-            settings.connect(`changed::${key}`, () => updateLocation().catch(logError));
+            handlers.push(settings.connect(`changed::${key}`, () => updateLocation().catch(logError)));
         updateLocation().catch(logError);
 
         const station = new Adw.PreferencesGroup({
             title: 'Station Environment',
         });
         page.add(station);
-        station.add(comboRow(settings, 'noise-environment', 'Noise environment',
+        station.add(comboRow(settings, handlers, 'noise-environment', 'Noise environment',
             'Man-made noise level (ITU-R P.372) used for the noise floor estimate', NOISE_ENVIRONMENTS));
 
         const panel = new Adw.PreferencesGroup({
             title: 'Top Bar',
         });
         page.add(panel);
-        panel.add(comboRow(settings, 'panel-position', 'Position', '', PANEL_POSITIONS));
+        panel.add(comboRow(settings, handlers, 'panel-position', 'Position', '', PANEL_POSITIONS));
         panel.add(switchRow(settings, 'panel-show-status-dot', 'Condition dot', 'Coloured dot with the overall HF condition'));
         panel.add(switchRow(settings, 'panel-show-sfi', 'Solar flux (SFI)'));
         panel.add(switchRow(settings, 'panel-show-kp', 'Kp index'));
