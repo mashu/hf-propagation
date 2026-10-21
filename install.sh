@@ -5,6 +5,7 @@
 #   ./install.sh              install or update for the current user
 #   ./install.sh --pack       build hf-propagation@mashu.github.io.shell-extension.zip
 #   ./install.sh --uninstall  remove the extension
+#   ./install.sh --status     show what the running GNOME Shell has loaded
 #
 set -euo pipefail
 
@@ -86,23 +87,89 @@ install() {
     fi
 
     echo
-    if gnome-extensions info "$UUID" 2>/dev/null | grep -qE 'State: (ACTIVE|ENABLED)'; then
-        ok "HF Propagation is running – look for the antenna icon in the top bar"
-    else
-        bold "Almost done"
-        info "GNOME Shell on Wayland only discovers new extensions at login."
-        info "Log out and back in, then run:  gnome-extensions enable $UUID"
-        info "(or use the Extensions app). Updating an already loaded extension also needs a re-login."
-    fi
+    status
     echo
     info "Settings: gnome-extensions prefs $UUID"
     info "Logs:     journalctl -f -o cat /usr/bin/gnome-shell | grep 'HF Propagation'"
 }
 
+metadata_version() {
+    sed -n 's/^ *"version": *\([0-9][0-9]*\).*/\1/p' "$1" | head -n 1
+}
+
+# Report what the running GNOME Shell has actually loaded. GNOME Shell reads
+# extension files only at login, so after an update it keeps running the old
+# copy (and its old shell-version list) until the user logs out and back in.
+status() {
+    local want major info state loaded loaded_num path supported other
+    want="$(metadata_version "$SRC_DIR/metadata.json")"
+    major="$(shell_major)"
+    supported="$(tr -d ' \n' < "$SRC_DIR/metadata.json" | sed -n 's/.*"shell-version":\[\([^]]*\)\].*/\1/p' | tr -d '"' | sed 's/,/, /g')"
+
+    bold "Status"
+    info "GNOME Shell ${major:-unknown}, this extension supports ${supported}"
+
+    while IFS= read -r other; do
+        [[ -n "$other" ]] && warn "Another copy is installed at $other"
+    done < <(other_copies)
+
+    info="$(gnome-extensions info "$UUID" 2>/dev/null || true)"
+    state="$(sed -n 's/^ *State: *//p' <<< "$info" | head -n 1)"
+    loaded="$(sed -n 's/^ *Version: *//p' <<< "$info" | head -n 1)"
+    path="$(sed -n 's/^ *Path: *//p' <<< "$info" | head -n 1)"
+    if [[ "$loaded" =~ \(([0-9]+)\) ]]; then
+        loaded_num="${BASH_REMATCH[1]}"
+    else
+        loaded_num="${loaded//[^0-9]/}"
+    fi
+
+    if [[ -z "$state" ]]; then
+        warn "GNOME Shell has not discovered the extension yet"
+        info "Log out and back in, then run:  gnome-extensions enable $UUID"
+        return
+    fi
+
+    info "Loaded by GNOME Shell: version ${loaded:-?}, state $state"
+    if [[ -n "$path" && "$path" != "$DEST" ]]; then
+        warn "GNOME Shell is using the copy in $path, not $DEST"
+    fi
+
+    if [[ -n "$loaded_num" && -n "$want" && "$loaded_num" != "$want" ]]; then
+        warn "GNOME Shell is still running version $loaded_num, loaded at your last login"
+        info "Log out and back in to load version $want. GNOME Shell only reads extensions at login,"
+        info "so until then it keeps the old copy and its old list of supported GNOME versions."
+        return
+    fi
+
+    case "$state" in
+        ACTIVE|ENABLED)
+            ok "HF Propagation is running – look for the antenna icon in the top bar" ;;
+        "OUT OF DATE")
+            warn "GNOME Shell ${major:-?} is not in this extension's supported versions ($supported)" ;;
+        ERROR)
+            warn "The extension failed to start; see: journalctl -b -o cat /usr/bin/gnome-shell | grep -A5 'HF Propagation'" ;;
+        *)
+            info "Enable it with:  gnome-extensions enable $UUID" ;;
+    esac
+}
+
+other_copies() {
+    local d dirs=(/usr/share /usr/local/share)
+    local IFS=:
+    for d in ${XDG_DATA_DIRS:-}; do
+        dirs+=("$d")
+    done
+    for d in "${dirs[@]}"; do
+        d="${d%/}/gnome-shell/extensions/$UUID"
+        [[ -d "$d" && "$d" != "$DEST" ]] && echo "$d"
+    done | sort -u
+}
+
 case "${1:-}" in
     --pack) pack ;;
     --uninstall) uninstall ;;
+    --status) status ;;
     ""|--install) install ;;
-    -h|--help) sed -n '3,8p' "$0" | sed 's/^# \{0,1\}//' ;;
+    -h|--help) sed -n '3,9p' "$0" | sed 's/^# \{0,1\}//' ;;
     *) die "Unknown option: $1 (try --help)" ;;
 esac

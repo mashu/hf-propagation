@@ -96,11 +96,16 @@ the dashboard is filled straight away after login.
 ## Troubleshooting
 
 ```bash
-gnome-extensions info hf-propagation@mashu.github.io      # State should be ACTIVE
+./install.sh --status                                      # what GNOME Shell has loaded
+gnome-extensions info hf-propagation@mashu.github.io      # State should be ACTIVE, Version 2.0 (2)
 journalctl -f -o cat /usr/bin/gnome-shell | grep 'HF Propagation'
 ```
 
-* **OUT OF DATE:** your GNOME Shell version is not listed in `metadata.json`.
+* **"Incompatible with the current version of GNOME" / OUT OF DATE:** GNOME
+  Shell is still running an older copy, read at your last login. Run
+  `./install.sh`, then log out and back in. Note that the version that matters
+  is the `gnome-shell` package (`gnome-shell --version`), not `gnome-session`.
+  During distribution upgrades these can differ (e.g. session 51 with shell 50).
 * **Nothing changes after updating:** log out and back in, because GNOME Shell
   caches loaded extension code.
 
