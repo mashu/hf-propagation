@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2025 Mateusz Kaduk
+ * SPDX-License-Identifier: GPL-3.0-or-later */
+
 /* HF Propagation – light style (loaded when GNOME Shell uses its light variant).
  * Only properties supported by GNOME Shell's St toolkit are used.
  * Custom "-hfp-*" colours are read by the Cairo-drawn widgets. */

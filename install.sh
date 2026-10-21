@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2025 Mateusz Kaduk
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 # HF Propagation – GNOME Shell extension installer
 #
@@ -170,6 +172,6 @@ case "${1:-}" in
     --uninstall) uninstall ;;
     --status) status ;;
     ""|--install) install ;;
-    -h|--help) sed -n '3,9p' "$0" | sed 's/^# \{0,1\}//' ;;
+    -h|--help) sed -n 's/^#   \(\.\/install\.sh\)/\1/p' "$0" ;;
     *) die "Unknown option: $1 (try --help)" ;;
 esac

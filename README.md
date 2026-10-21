@@ -128,3 +128,15 @@ journalctl -f -o cat /usr/bin/gnome-shell | grep 'HF Propagation'
 * New features: local MUF with ionosonde calibration, absorption, noise floor,
   sun and grey line, 24 h band outlook with best windows, NOAA scales, Kp
   forecast, X-ray history, settings.
+
+## License
+
+Copyright © 2025 Mateusz Kaduk.
+
+HF Propagation is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version. See [LICENSE](LICENSE) for the full text.
+
+The world map's coastlines are derived from [Natural Earth](https://www.naturalearthdata.com/)
+data, which is in the public domain.

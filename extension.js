@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Mateusz Kaduk
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // HF Propagation – GNOME Shell extension entry point.
 
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';

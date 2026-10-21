@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2025 Mateusz Kaduk
+ * SPDX-License-Identifier: GPL-3.0-or-later */
+
 /* HF Propagation – dark style (also the fallback stylesheet).
  * Only properties supported by GNOME Shell's St toolkit are used.
  * Custom "-hfp-*" colours are read by the Cairo-drawn widgets. */

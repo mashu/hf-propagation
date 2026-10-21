@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Mateusz Kaduk
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Preferences window for the HF Propagation extension.
 
 import Adw from 'gi://Adw';
